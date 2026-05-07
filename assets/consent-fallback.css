@@ -1,0 +1,30 @@
+/*
+ * Consent Fallback — minimal default styling.
+ *
+ * Inherits theme typography. Overridable via CSS custom properties or by
+ * targeting the .consent-fallback__message class with normal specificity.
+ */
+
+.consent-fallback__message {
+	--consent-fallback-bg: rgba(0, 0, 0, 0.03);
+	--consent-fallback-border: rgba(0, 0, 0, 0.18);
+	--consent-fallback-padding: 1em 1.25em;
+
+	display: block;
+	box-sizing: border-box;
+	padding: var(--consent-fallback-padding);
+	background: var(--consent-fallback-bg);
+	border: 1px solid var(--consent-fallback-border);
+	border-radius: 4px;
+	line-height: 1.5;
+}
+
+.consent-fallback__settings-link {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.consent-fallback__settings-link:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
