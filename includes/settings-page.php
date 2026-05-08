@@ -38,6 +38,13 @@ function consent_fallback_register_settings() {
 	);
 
 	add_settings_section(
+		'consent_fallback_usage',
+		__( 'How to use', 'consent-fallback' ),
+		'consent_fallback_render_usage_section',
+		'consent-fallback'
+	);
+
+	add_settings_section(
 		'consent_fallback_main',
 		__( 'Fallback message', 'consent-fallback' ),
 		'consent_fallback_render_section_intro',
@@ -81,6 +88,51 @@ function consent_fallback_register_settings() {
 	);
 }
 add_action( 'admin_init', 'consent_fallback_register_settings' );
+
+/**
+ * "How to use" reference section — shown above the editable fields so authors
+ * can copy the markup without leaving the page.
+ */
+function consent_fallback_render_usage_section() {
+	$shortcode_example = "[consent_fallback label=\"this form\"]\n  <!-- paste your HubSpot, Greenhouse, etc. embed code here -->\n[/consent_fallback]";
+	$html_example      = "<div class=\"consent-fallback\" data-fallback-label=\"this form\">\n  <!-- paste your HubSpot, Greenhouse, etc. embed code here -->\n</div>";
+	?>
+	<p>
+		<?php
+		echo wp_kses(
+			__( 'Wrap each embed (HubSpot form, Greenhouse board, etc.) in a <code>.consent-fallback</code> element. If the embed hasn\'t populated by the detection timeout below, the fallback message is injected. Pick whichever method fits the editor you\'re using:', 'consent-fallback' ),
+			array( 'code' => array() )
+		);
+		?>
+	</p>
+
+	<h3 style="margin-top:1.25em;"><?php esc_html_e( 'Option 1 — Shortcode', 'consent-fallback' ); ?></h3>
+	<p class="description">
+		<?php esc_html_e( 'Easiest in the classic editor or a Gutenberg shortcode block.', 'consent-fallback' ); ?>
+	</p>
+	<pre style="padding:0.75em 1em; background:#f6f7f7; border:1px solid #dcdcde; border-radius:3px; overflow:auto;"><code><?php echo esc_html( $shortcode_example ); ?></code></pre>
+
+	<h3 style="margin-top:1.25em;"><?php esc_html_e( 'Option 2 — Direct HTML', 'consent-fallback' ); ?></h3>
+	<p class="description">
+		<?php
+		echo wp_kses(
+			__( 'For Divi <strong>Code</strong> modules, Gutenberg <strong>Custom HTML</strong> blocks, or any builder that lets you paste raw markup.', 'consent-fallback' ),
+			array( 'strong' => array() )
+		);
+		?>
+	</p>
+	<pre style="padding:0.75em 1em; background:#f6f7f7; border:1px solid #dcdcde; border-radius:3px; overflow:auto;"><code><?php echo esc_html( $html_example ); ?></code></pre>
+
+	<p class="description" style="margin-top:1em;">
+		<?php
+		echo wp_kses(
+			__( 'The <code>label</code> attribute (or <code>data-fallback-label</code>) is interpolated into the message via the <code>{label}</code> placeholder. If you omit it, it defaults to <code>this content</code>.', 'consent-fallback' ),
+			array( 'code' => array() )
+		);
+		?>
+	</p>
+	<?php
+}
 
 /**
  * Section blurb above the fields.
