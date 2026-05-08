@@ -103,7 +103,7 @@ function consent_fallback_enqueue_assets() {
 add_action( 'wp_enqueue_scripts', 'consent_fallback_enqueue_assets' );
 
 /**
- * Shortcode: [consent_fallback label="this form"]...embed HTML...[/consent_fallback]
+ * Shortcode: [consent_fallback label="form"]...embed HTML...[/consent_fallback]
  *
  * Wraps inner content in <div class="consent-fallback" data-fallback-label="...">.
  *
@@ -114,7 +114,7 @@ add_action( 'wp_enqueue_scripts', 'consent_fallback_enqueue_assets' );
 function consent_fallback_shortcode( $atts, $content = null ) {
 	$atts = shortcode_atts(
 		array(
-			'label' => 'this content',
+			'label' => 'content',
 		),
 		$atts,
 		'consent_fallback'
