@@ -6,14 +6,12 @@
  *
  *   1. If meaningful content already exists, do nothing.
  *   2. Otherwise, start a timer (observeTimeoutMs) AND a MutationObserver.
- *      - If content appears before the timer fires, cancel the timer.
+ *      - If content appears before the timer fires, cancel the timer and
+ *        disconnect the observer (content won't disappear).
  *      - If the timer fires with no content, inject the fallback message.
- *      - The observer KEEPS RUNNING after that. If the embed eventually
- *        populates (e.g. user grants consent and the embed script finally
- *        renders an iframe), the fallback is removed.
- *
- * The observer is intentionally never disconnected — that's how late-loading
- * embeds get unblocked.
+ *        The observer keeps running so that if the user later grants consent
+ *        and the embed loads, the fallback is removed and the observer
+ *        disconnects.
  */
 (function () {
 	'use strict';
@@ -91,6 +89,8 @@
 		el.className = FALLBACK_CLASS;
 		el.setAttribute('role', 'status');
 		el.setAttribute('aria-live', 'polite');
+		// Safe: messageTemplate is stored after sanitize_textarea_field (strips
+		// tags); {label} and settingsLinkText are HTML-escaped above.
 		el.innerHTML = rendered;
 
 		var link = el.querySelector('.' + LINK_CLASS);
@@ -136,6 +136,10 @@
 			if (!hasMeaningfulContent(wrapper)) {
 				wrapper.appendChild(buildFallbackElement(wrapper, config));
 				fallbackShown = true;
+			} else {
+				// Content arrived before the timeout (observer missed the mutation
+				// because it registered after the embed loaded). Nothing to do.
+				observer.disconnect();
 			}
 		}, config.observeTimeoutMs);
 
@@ -143,32 +147,29 @@
 			var hasContent = hasMeaningfulContent(wrapper);
 
 			if (!fallbackShown && hasContent) {
-				// Embed populated before our timer fired. Cancel the timer;
-				// we never need the fallback. Observer stays attached so a
-				// future re-render still wouldn't re-inject anything (it
-				// only injects when the timer fires).
+				// Embed populated before our timer fired. Cancel the timer
+				// and disconnect — content won't disappear.
 				if (timeoutId !== null) {
 					clearTimeout(timeoutId);
 					timeoutId = null;
 				}
+				observer.disconnect();
 				return;
 			}
 
 			if (fallbackShown && hasContent) {
 				// Late-loading embed (e.g. user just granted consent).
-				// Remove the fallback; observer keeps running.
+				// Remove the fallback, then disconnect — content won't disappear.
 				var existing = getInjectedFallback(wrapper);
 				if (existing && existing.parentNode === wrapper) {
 					wrapper.removeChild(existing);
 				}
 				fallbackShown = false;
+				observer.disconnect();
 			}
 		});
 
-		// Persistent observer: never disconnected. With 1–3 wrappers per
-		// page the cost is negligible, and disconnecting would break the
-		// "consent granted later" case.
-		observer.observe(wrapper, { childList: true, subtree: true });
+		observer.observe(wrapper, { childList: true });
 	}
 
 	function init() {
