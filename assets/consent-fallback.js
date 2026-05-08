@@ -8,6 +8,9 @@
  *   2. Otherwise, start a timer (observeTimeoutMs) AND a MutationObserver.
  *      - If content appears before the timer fires, cancel the timer and
  *        disconnect the observer (content won't disappear).
+ *        The observer watches the full subtree because some embeds populate
+ *        an existing child container rather than injecting a new top-level
+ *        element; hasMeaningfulContent still checks direct children only.
  *      - If the timer fires with no content, inject the fallback message.
  *        The observer keeps running so that if the user later grants consent
  *        and the embed loads, the fallback is removed and the observer
@@ -169,7 +172,7 @@
 			}
 		});
 
-		observer.observe(wrapper, { childList: true });
+		observer.observe(wrapper, { childList: true, subtree: true });
 	}
 
 	function init() {
