@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get plugin version
+        id: version
+        run: |
+          VERSION=$(grep -m1 "^ \* Version:" consent-fallback.php | awk '{print $3}')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build plugin zip
+        run: |
+          mkdir -p build/consent-fallback
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='build' \
+            --exclude='README.md' \
+            . build/consent-fallback/
+          cd build
+          zip -r consent-fallback.zip consent-fallback/
+
+      - name: Create or update release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          files: build/consent-fallback.zip
+          make_latest: true
