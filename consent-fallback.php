@@ -3,7 +3,7 @@
  * Plugin Name:       Consent Fallback
  * Plugin URI:        https://github.com/hencove/consent-alert
  * Description:       Shows a configurable fallback message inside embed wrappers (HubSpot forms, Greenhouse boards, etc.) that fail to populate because of cookie/consent gating, network issues, or ad blockers.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Hencove
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CONSENT_FALLBACK_VERSION', '1.0.2' );
+define( 'CONSENT_FALLBACK_VERSION', '1.0.3' );
 define( 'CONSENT_FALLBACK_FILE', __FILE__ );
 define( 'CONSENT_FALLBACK_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONSENT_FALLBACK_URL', plugin_dir_url( __FILE__ ) );
@@ -120,7 +120,10 @@ function consent_fallback_shortcode( $atts, $content = null ) {
 		'consent_fallback'
 	);
 
-	$inner = $content !== null ? do_shortcode( $content ) : '';
+	// wpautop (which runs before shortcodes) can inject <br> tags at newlines
+	// inside the shortcode body. Strip them so they don't register as
+	// meaningful content in the JS observer.
+	$inner = $content !== null ? do_shortcode( preg_replace( '/<br\s*\/?>/i', '', $content ) ) : '';
 
 	return sprintf(
 		'<div class="consent-fallback" data-fallback-label="%s">%s</div>',
