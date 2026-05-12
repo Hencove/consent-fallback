@@ -50,6 +50,10 @@
 	 * Critically, we skip our own injected fallback message; otherwise the
 	 * observer would see its own injection as content and immediately remove
 	 * the fallback in an infinite loop.
+	 *
+	 * Empty container divs (e.g. Greenhouse's <div id="grnhse_app">) are
+	 * present in the static HTML before the embed loads, so we treat a child
+	 * element with no sub-children and no visible text as non-meaningful.
 	 */
 	function hasMeaningfulContent(wrapper) {
 		var children = wrapper.children;
@@ -60,6 +64,11 @@
 			}
 			var tag = child.tagName;
 			if (tag === 'SCRIPT' || tag === 'NOSCRIPT' || tag === 'BR') {
+				continue;
+			}
+			// Skip empty container elements — embed SDKs often place a bare
+			// placeholder div in the page HTML before injecting real content.
+			if (child.children.length === 0 && child.textContent.trim() === '') {
 				continue;
 			}
 			return true;
