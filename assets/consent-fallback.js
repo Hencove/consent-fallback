@@ -77,7 +77,7 @@
 	}
 
 	function buildFallbackElement(wrapper, config) {
-		var label = wrapper.getAttribute('data-fallback-label') || 'this content';
+		var label = wrapper.getAttribute('data-fallback-label') || 'content';
 
 		// Settings link is built as an actual element so we can attach a
 		// click handler and own its accessibility/focus behavior. We render

@@ -94,8 +94,8 @@ add_action( 'admin_init', 'consent_fallback_register_settings' );
  * can copy the markup without leaving the page.
  */
 function consent_fallback_render_usage_section() {
-	$shortcode_example = "[consent_fallback label=\"this form\"]\n  <!-- paste your HubSpot, Greenhouse, etc. embed code here -->\n[/consent_fallback]";
-	$html_example      = "<div class=\"consent-fallback\" data-fallback-label=\"this form\">\n  <!-- paste your HubSpot, Greenhouse, etc. embed code here -->\n</div>";
+	$shortcode_example = "[consent_fallback label=\"form\"]\n  <!-- paste your HubSpot, Greenhouse, etc. embed code here -->\n[/consent_fallback]";
+	$html_example      = "<div class=\"consent-fallback\" data-fallback-label=\"form\">\n  <!-- paste your HubSpot, Greenhouse, etc. embed code here -->\n</div>";
 	?>
 	<p>
 		<?php
@@ -126,8 +126,11 @@ function consent_fallback_render_usage_section() {
 	<p class="description" style="margin-top:1em;">
 		<?php
 		echo wp_kses(
-			__( 'The <code>label</code> attribute (or <code>data-fallback-label</code>) is interpolated into the message via the <code>{label}</code> placeholder. If you omit it, it defaults to <code>this content</code>.', 'consent-fallback' ),
-			array( 'code' => array() )
+			__( 'The <code>label</code> attribute (or <code>data-fallback-label</code>) is interpolated into the message via the <code>{label}</code> placeholder. Use just the name of the thing being blocked — for example <code>form</code>, <code>job board</code>, <code>video</code> — <strong>not</strong> <code>this form</code>, since the default message already begins with &#8220;This&#8221;. If you omit the attribute, it defaults to <code>content</code>.', 'consent-fallback' ),
+			array(
+				'code'   => array(),
+				'strong' => array(),
+			)
 		);
 		?>
 	</p>
@@ -197,7 +200,7 @@ function consent_fallback_field_message_template() {
 	<p class="description">
 		<?php
 		echo wp_kses(
-			__( 'Plain text. <code>{label}</code> is replaced with each wrapper\'s <code>data-fallback-label</code>. <code>{settingsLink}</code> is replaced with the link below.', 'consent-fallback' ),
+			__( 'Plain text. <code>{label}</code> is replaced with each wrapper\'s <code>data-fallback-label</code> (a noun like <code>form</code> or <code>job board</code>, with no leading &#8220;this&#8221;). <code>{settingsLink}</code> is replaced with the link below.', 'consent-fallback' ),
 			array( 'code' => array() )
 		);
 		?>

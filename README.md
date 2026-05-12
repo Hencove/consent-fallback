@@ -27,7 +27,7 @@ those wrappers and watches them. Two ways to produce the markup:
 ### 1. Direct HTML (Divi Code module, custom HTML block, etc.)
 
 ```html
-<div class="consent-fallback" data-fallback-label="this form">
+<div class="consent-fallback" data-fallback-label="form">
   <!-- existing HubSpot or Greenhouse embed code, unchanged -->
   <script>...hubspot snippet...</script>
 </div>
@@ -36,14 +36,16 @@ those wrappers and watches them. Two ways to produce the markup:
 ### 2. Shortcode
 
 ```
-[consent_fallback label="this form"]
+[consent_fallback label="form"]
   <!-- embed code -->
 [/consent_fallback]
 ```
 
 `data-fallback-label` (or the `label` shortcode attribute) is interpolated
-into the message via the `{label}` placeholder. If omitted, it defaults to
-`this content`.
+into the message via the `{label}` placeholder. Use just the name of the
+thing being blocked — e.g. `form`, `job board`, `video` — **not**
+`this form`, since the default message template already begins with
+"This". If omitted, it defaults to `content`.
 
 ### What counts as "populated"?
 
@@ -66,7 +68,8 @@ container), so the default rule covers them.
 The message template supports two placeholders:
 
 - `{label}` — replaced with the wrapper's `data-fallback-label`
-  (or `this content` if missing).
+  (or `content` if missing). Should be a bare noun like `form` or
+  `job board`; the default template already supplies the leading "This".
 - `{settingsLink}` — replaced with an `<a>` element rendered by the
   plugin. Clicking it runs the configured JavaScript.
 
