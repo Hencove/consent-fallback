@@ -11,10 +11,16 @@ configured timeout, the fallback message is injected. If the embed
 populates later (e.g. the user grants consent without a page reload), the
 fallback is removed.
 
+## Disclaimer
+
+This plugin is provided as-is, without warranty of any kind. Hencove is not responsible for how it is used, cannot offer support, and accepts no liability for bugs, data loss, or other issues that may arise from its use. Use at your own risk.
+
 ## Install
 
 Drop the plugin folder into `wp-content/plugins/consent-fallback/` (or
 clone the repo there) and activate it in **Plugins → Installed Plugins**.
+
+Releases provide zip files for uploading to Plugins panel.
 
 The plugin is self-contained — all JS and CSS are served from the same
 origin as the site, so a CMP can't accidentally block them.
@@ -24,12 +30,14 @@ origin as the site, so a CMP can't accidentally block them.
 Wrap each embed in a `.consent-fallback` element. The plugin's JS finds
 those wrappers and watches them. Two ways to produce the markup:
 
-### 1. Direct HTML (Divi Code module, custom HTML block, etc.)
+### 1. Direct HTML (theme Code module, custom HTML block, etc.)
 
 ```html
 <div class="consent-fallback" data-fallback-label="form">
   <!-- existing HubSpot or Greenhouse embed code, unchanged -->
-  <script>...hubspot snippet...</script>
+  <script>
+    ...hubspot snippet...
+  </script>
 </div>
 ```
 
@@ -58,12 +66,12 @@ container), so the default rule covers them.
 
 **Settings → Consent Fallback** in wp-admin exposes four fields:
 
-| Field                       | Default                                                                                           |
-|-----------------------------|---------------------------------------------------------------------------------------------------|
-| Message template            | `This {label} requires Functional cookies to load. You can {settingsLink} and reload the page to view it.` |
-| Settings link text          | `manage your cookie preferences`                                                                  |
-| Settings link JavaScript    | `window.ours_consent.showPreferences();`                                                          |
-| Detection timeout (ms)      | `2500`                                                                                            |
+| Field                    | Default                                                                                                    |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Message template         | `This {label} requires Functional cookies to load. You can {settingsLink} and reload the page to view it.` |
+| Settings link text       | `manage your cookie preferences`                                                                           |
+| Settings link JavaScript | `window.ours_consent.showPreferences();`                                                                   |
+| Detection timeout (ms)   | `2500`                                                                                                     |
 
 The message template supports two placeholders:
 
@@ -112,42 +120,6 @@ add_filter( 'consent_fallback_config', function ( $config ) {
 Most of the time you only need to swap `settingsJs` (and optionally
 `settingsLinkText`).
 
-### CookieYes
-
-```php
-add_filter( 'consent_fallback_config', function ( $config ) {
-    $config['settingsJs'] = 'document.querySelector("[data-cky-tag=\\"revisit-consent\\"]")?.click();';
-    return $config;
-} );
-```
-
-### Cookiebot
-
-```php
-add_filter( 'consent_fallback_config', function ( $config ) {
-    $config['settingsJs'] = 'window.Cookiebot.renew();';
-    return $config;
-} );
-```
-
-### Complianz
-
-```php
-add_filter( 'consent_fallback_config', function ( $config ) {
-    $config['settingsJs'] = 'window.cmplz_show_cookie_banner();';
-    return $config;
-} );
-```
-
-### OneTrust
-
-```php
-add_filter( 'consent_fallback_config', function ( $config ) {
-    $config['settingsJs'] = 'window.OneTrust.ToggleInfoDisplay();';
-    return $config;
-} );
-```
-
 If your CMP doesn't expose a JavaScript hook, point the link at the
 relevant page and override the message template instead — for example:
 
@@ -167,9 +139,9 @@ can override. Three CSS custom properties are exposed:
 
 ```css
 .consent-fallback__message {
-    --consent-fallback-bg: #fafafa;
-    --consent-fallback-border: #ccd0d4;
-    --consent-fallback-padding: 1.25em 1.5em;
+  --consent-fallback-bg: #fafafa;
+  --consent-fallback-border: #ccd0d4;
+  --consent-fallback-padding: 1.25em 1.5em;
 }
 ```
 
@@ -177,8 +149,8 @@ Or override the whole element directly:
 
 ```css
 .consent-fallback__message {
-    background: #fff7e0;
-    border-color: #d9a300;
+  background: #fff7e0;
+  border-color: #d9a300;
 }
 ```
 
@@ -196,12 +168,12 @@ via the settings page or filter.
 
 ## Configuration surface (reference)
 
-| Key                | Type    | Default                                      |
-|--------------------|---------|----------------------------------------------|
-| `messageTemplate`  | string  | see "Settings page" above                    |
-| `settingsLinkText` | string  | `manage your cookie preferences`             |
-| `settingsJs`       | string  | `window.ours_consent.showPreferences();`     |
-| `observeTimeoutMs` | integer | `2500` (clamped to 500–30000)                |
+| Key                | Type    | Default                                  |
+| ------------------ | ------- | ---------------------------------------- |
+| `messageTemplate`  | string  | see "Settings page" above                |
+| `settingsLinkText` | string  | `manage your cookie preferences`         |
+| `settingsJs`       | string  | `window.ours_consent.showPreferences();` |
+| `observeTimeoutMs` | integer | `2500` (clamped to 500–30000)            |
 
 The resolved config is shipped to the browser as
 `window.ConsentFallback.config = {...}` immediately before the plugin's
