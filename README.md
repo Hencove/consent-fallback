@@ -181,4 +181,4 @@ JS file loads.
 
 ## License
 
-GPLv2 or later.
+GPLv3 or later.
