@@ -59,7 +59,7 @@
 				continue;
 			}
 			var tag = child.tagName;
-			if (tag === 'SCRIPT' || tag === 'NOSCRIPT') {
+			if (tag === 'SCRIPT' || tag === 'NOSCRIPT' || tag === 'BR') {
 				continue;
 			}
 			return true;

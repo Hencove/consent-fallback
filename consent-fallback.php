@@ -120,7 +120,10 @@ function consent_fallback_shortcode( $atts, $content = null ) {
 		'consent_fallback'
 	);
 
-	$inner = $content !== null ? do_shortcode( $content ) : '';
+	// wpautop (which runs before shortcodes) can inject <br> tags at newlines
+	// inside the shortcode body. Strip them so they don't register as
+	// meaningful content in the JS observer.
+	$inner = $content !== null ? do_shortcode( preg_replace( '/<br\s*\/?>/i', '', $content ) ) : '';
 
 	return sprintf(
 		'<div class="consent-fallback" data-fallback-label="%s">%s</div>',
