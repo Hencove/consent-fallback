@@ -95,14 +95,20 @@
 
 		var rendered = String(config.messageTemplate)
 			.replace(/\{label\}/g, escapeHtml(label))
-			.replace(/\{settingsLink\}/g, linkHtml);
+			.replace(/\{settingsLink\}/g, linkHtml)
+			// Author line breaks (preserved by sanitize_textarea_field) would
+			// otherwise collapse to whitespace in innerHTML. Done last so it
+			// only affects template newlines, not the spliced link markup
+			// (which contains none).
+			.replace(/\r\n?|\n/g, '<br>');
 
 		var el = document.createElement('div');
 		el.className = FALLBACK_CLASS;
 		el.setAttribute('role', 'status');
 		el.setAttribute('aria-live', 'polite');
 		// Safe: messageTemplate is stored after sanitize_textarea_field (strips
-		// tags); {label} and settingsLinkText are HTML-escaped above.
+		// tags); {label} and settingsLinkText are HTML-escaped above; the only
+		// markup we inject is the settings link and <br> tags from newlines.
 		el.innerHTML = rendered;
 
 		var link = el.querySelector('.' + LINK_CLASS);

@@ -200,7 +200,7 @@ function consent_fallback_field_message_template() {
 	<p class="description">
 		<?php
 		echo wp_kses(
-			__( 'Plain text. <code>{label}</code> is replaced with each wrapper\'s <code>data-fallback-label</code> (a noun like <code>form</code> or <code>job board</code>, with no leading &#8220;this&#8221;). <code>{settingsLink}</code> is replaced with the link below.', 'consent-fallback' ),
+			__( 'Plain text; line breaks are preserved. <code>{label}</code> is replaced with each wrapper\'s <code>data-fallback-label</code> (a noun like <code>form</code> or <code>job board</code>, with no leading &#8220;this&#8221;). <code>{settingsLink}</code> is replaced with the link below.', 'consent-fallback' ),
 			array( 'code' => array() )
 		);
 		?>
