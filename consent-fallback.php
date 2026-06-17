@@ -3,7 +3,7 @@
  * Plugin Name:       Consent Fallback
  * Plugin URI:        https://github.com/hencove/consent-alert
  * Description:       Shows a configurable fallback message inside embed wrappers (HubSpot forms, Greenhouse boards, etc.) that fail to populate because of cookie/consent gating, network issues, or ad blockers.
- * Version:           1.0.4
+ * Version:           1.0.5
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Hencove
